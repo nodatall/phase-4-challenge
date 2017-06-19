@@ -3,3 +3,18 @@ html, body {
   padding: 0;
   width: 100vw;
 }
+
+.image-container {
+  overflow: hidden;
+  height: 350px;
+}
+
+.image-container img {
+  width: 100%;
+}
+
+@media (min-width: 1000px) {
+  .image-container img {
+    margin-top: -200px;
+  }
+}
