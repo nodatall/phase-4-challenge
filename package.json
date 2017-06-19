@@ -8,6 +8,8 @@
     "start:dev": "nodemon server.js",
     "db:create": "createdb vinyl",
     "db:create:test": "createdb vinyl-test",
+    "db:reset": "yarn run db:drop && yarn run db:create && yarn run db:schema && yarn run db:seed",
+    "db:reset:test": "yarn run db:drop:test && yarn run db:create:test && yarn run db:schema:test && yarn run db:seed:test",
     "db:drop": "dropdb vinyl",
     "db:drop:test": "dropdb vinyl-test",
     "db:schema": "psql -d vinyl < schema.sql",
