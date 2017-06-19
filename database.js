@@ -14,8 +14,10 @@ client.connect()
 
 // Query helper function
 const query = function(sql, variables, callback){
-  console.log('QUERY ->', sql.replace(/[\n\s]+/g, ' '), variables)
-
+  if ( process.env.NODE_ENV !== 'test' ) {
+    console.log('QUERY ->', sql.replace(/[\n\s]+/g, ' '), variables)
+  }
+  
   client.query(sql, variables, function(error, result){
     if (error){
       console.log('QUERY <- !!ERROR!!')
@@ -39,7 +41,7 @@ const getAlbumsByID = function(albumID, callback) {
 }
 
 const truncateTables = function(callback) {
-  query("TRUNCATE TABLE albums", [], callback)
+  query("TRUNCATE TABLE users", [], callback)
 }
 
 module.exports = {
