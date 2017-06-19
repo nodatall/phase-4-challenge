@@ -3,12 +3,17 @@
   "version": "1.0.0",
   "description": "A community for record enthusiasts to review their favorite albums.",
   "scripts": {
+    "test": "NODE_ENV=test mocha",
     "start": "node server.js",
     "start:dev": "nodemon server.js",
     "db:create": "createdb vinyl",
+    "db:create:test": "createdb vinyl-test",
     "db:drop": "dropdb vinyl",
+    "db:drop:test": "dropdb vinyl-test",
     "db:schema": "psql -d vinyl < schema.sql",
-    "db:seed": "psql -d vinyl < albums.sql"
+    "db:schema:test": "psql -d vinyl-test < schema.sql",
+    "db:seed": "psql -d vinyl < seedData.sql",
+    "db:seed:test": "psql -d vinyl-test < seedData.sql"
   },
   "license": "MIT",
   "dependencies": {
@@ -19,8 +24,10 @@
   },
   "devDependencies": {
     "body-parser": "^1.17.2",
+    "chai": "^4.0.2",
     "ejs": "^2.5.6",
     "express": "^4.15.3",
+    "mocha": "^3.4.2",
     "nodemon": "^1.11.0",
     "pg": "^6.2.4"
   }

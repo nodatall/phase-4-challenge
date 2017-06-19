@@ -1,6 +1,12 @@
 const pg = require('pg')
 
-const dbName = 'vinyl'
+let dbName
+if ( process.env.NODE_ENV === 'test' ) {
+  dbName = 'vinyl-test'
+} else {
+  dbName = 'vinyl'
+}
+
 const connectionString = process.env.DATABASE_URL || `postgres://localhost:5432/${dbName}`
 const client = new pg.Client(connectionString)
 
@@ -16,7 +22,9 @@ const query = function(sql, variables, callback){
       console.error(error)
       callback(error)
     }else{
-      console.log('QUERY <-', JSON.stringify(result.rows))
+      if ( process.env.NODE_ENV !== 'test' ) {
+        console.log('QUERY <-', JSON.stringify(result.rows))
+      }
       callback(error, result.rows)
     }
   })
@@ -30,7 +38,12 @@ const getAlbumsByID = function(albumID, callback) {
   query("SELECT * FROM albums WHERE id = $1", [albumID], callback)
 }
 
+const truncateTables = function(callback) {
+  query("TRUNCATE TABLE albums", [], callback)
+}
+
 module.exports = {
   getAlbums,
-  getAlbumsByID
+  getAlbumsByID,
+  truncateTables
 }
