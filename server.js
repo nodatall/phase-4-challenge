@@ -32,6 +32,9 @@ app.get('/albums/:albumID', (request, response) => {
   })
 })
 
+app.get('/signup', (request, response) => response.render('sign_up'))
+app.get('/signin', (request, response) => response.render('sign_in'))
+
 app.use((request, response) => {
   response.status(404).render('not_found')
 })

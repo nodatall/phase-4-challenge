@@ -18,3 +18,12 @@ html, body {
     margin-top: -200px;
   }
 }
+
+.top-nav {
+  display: flex;
+  align-items: center;
+}
+
+.top-nav h1 {
+  margin-right: auto;
+}
