@@ -29,4 +29,12 @@ router.get('/albums/:albumID', (request, response) => {
 router.get('/signup', (request, response) => response.render('sign_up'))
 router.get('/signin', (request, response) => response.render('sign_in'))
 
+router.post('/users/new', (request, response) => {
+  //Add new user
+})
+
+router.post('/login', (request, response) => {
+  //Log in user
+})
+
 module.exports = router
