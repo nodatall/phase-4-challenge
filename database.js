@@ -17,7 +17,7 @@ const query = function(sql, variables, callback){
   if ( process.env.NODE_ENV !== 'test' ) {
     console.log('QUERY ->', sql.replace(/[\n\s]+/g, ' '), variables)
   }
-  
+
   client.query(sql, variables, function(error, result){
     if (error){
       console.log('QUERY <- !!ERROR!!')
@@ -44,8 +44,22 @@ const truncateTables = function(callback) {
   query("TRUNCATE TABLE users", [], callback)
 }
 
+const addUser = function({ name, email, password }, callback) {
+  query(
+    "INSERT INTO users (name, email, password) VALUES ($1, $2, $3)",
+    [name, email, password],
+    callback
+  )
+}
+
+const getUserByEmail = function (email, callback) {
+  query("SELECT * FROM users where email = $1", [email], callback)
+}
+
 module.exports = {
   getAlbums,
   getAlbumsByID,
-  truncateTables
+  truncateTables,
+  addUser,
+  getUserByEmail
 }
