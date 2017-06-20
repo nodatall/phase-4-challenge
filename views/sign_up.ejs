@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vinyl</title>
+  <title>Sign Up</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
   <script type="text/javascript" src="/script.js"></script>
 </head>
 <body>
+  <% include header.ejs %>
   <h1>Create an account</h1>
   <form action="/users/new" method="post">
     <input placeholder="name" name="name">
