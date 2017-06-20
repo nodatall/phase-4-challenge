@@ -66,19 +66,20 @@ const addReview = function ( { content, user_id, album_id }, callback ) {
   )
 }
 
-const getReviewsByAlbumId = function ( albumId, callback ) {
+const getReviewsBy = function ( column, value, callback ) {
   query(
-    "SELECT reviews.id, reviews.content, reviews.date, users.name, albums.title FROM reviews JOIN users ON (reviews.user_id = users.id) JOIN albums ON (reviews.album_id = albums.id) WHERE album_id = $1",
-    [albumId],
-    callback )
+    `SELECT reviews.id, reviews.content, reviews.date, users.name, albums.title FROM reviews JOIN users ON (reviews.user_id = users.id) JOIN albums ON (reviews.album_id = albums.id) WHERE ${column} = $1`,
+    [value],
+    callback
+  )
+}
+
+const getReviewsByAlbumId = function ( albumId, callback ) {
+  getReviewsBy( 'album_id', albumId, callback )
 }
 
 const getReviewsByUserId = function ( userId, callback ) {
-  query(
-    "SELECT reviews.id, reviews.content, reviews.date, users.name, albums.title FROM reviews JOIN users ON (reviews.user_id = users.id) JOIN albums ON (reviews.album_id = albums.id) WHERE user_id = $1",
-    [userId],
-    callback
-  )
+  getReviewsBy( 'user_id', userId, callback )
 }
 
 const deleteReview = function ( reviewId, callback ) {
