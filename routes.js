@@ -30,7 +30,13 @@ router.get('/signup', (request, response) => response.render('sign_up'))
 router.get('/signin', (request, response) => response.render('sign_in'))
 
 router.post('/users/new', (request, response) => {
-  //Add new user
+  database.addUser( request.body, ( error, user ) => {
+      if (error) {
+        response.status(500).render('error', { error: error })
+      } else {
+        response.redirect('/')
+      }
+  })
 })
 
 router.post('/login', (request, response) => {
