@@ -8,7 +8,7 @@ router.get( '/', ( request, response ) => {
     if ( error ) {
       response.status(500).render( 'error', { error: error } )
     } else {
-      response.render('index', { albums: albums })
+      response.render('index', { albums })
     }
   })
 })
@@ -34,7 +34,11 @@ router.post( '/users/new', ( request, response ) => {
       if ( error ) {
         response.status( 500 ).render('error', { error: error } )
       } else {
-        response.redirect( '/' )
+        const { email, password } = request.body
+        database.getUser( { email, password }, ( error, user ) => {
+          request.session.user = user[0]
+          response.redirect( `/users/${users[0].id}` )
+        })
       }
   })
 })
@@ -44,9 +48,21 @@ router.post( '/login', ( request, response ) => {
     if ( error ) {
       response.status( 500 ).render('error', { error: error } )
     } else {
-      response.redirect( '/' )
+      request.session.user = user[0]
+      response.redirect( `/users/${user[0].id}` )
     }
   })
+})
+
+router.get( '/users/:id', ( request, response ) => {
+  if ( !request.session.user ) {
+    response.redirect( '/' )
+  }
+  if ( request.session.user.id !== +request.params.id ) {
+    response.redirect( '/signin')
+  }
+  const { name, email, joined } = request.session.user
+  response.render('profile', { name, email, joined })
 })
 
 module.exports = router
