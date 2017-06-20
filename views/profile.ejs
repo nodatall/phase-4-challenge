@@ -1,18 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Vinyl : <%= album.title %></title>
+  <title>Profile</title>
   <link rel="stylesheet" type="text/css" href="/style.css">
   <script type="text/javascript" src="/script.js"></script>
 </head>
 <body>
   <% include header.ejs %>
-  <h1><%= album.title %></h1>
-  <em>by <%= album.artist %></em>
-
-  <h2>Reviews</h2>
-
-  <!-- TODO: implement album reviews -->
-
+  <h1>Welcome <%= name %></h1>
+  <div class='user-info'>
+    <p>email: <%= email %></p>
+    <p>join date: <%= joined %></p>
+  </div>
 </body>
 </html>

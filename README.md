@@ -18,7 +18,9 @@ public/             # static assets go here
 README.md           # you are here
 schema.sql          # define database schema here
 server.js           # web server
+routes.js           # express routes here
 views/              # html templates go here
+test/               # tests go here
 ```
 
 ### Setting Up Your Database
@@ -26,5 +28,6 @@ views/              # html templates go here
 Use the following commands to set up and seed your database:
 
 1. Create PostgreSQL database `vinyl`: `$ npm run db:create`
+1. Create PostgreSQL test database `vinyl`: `$ npm run db:create:test`
 1. Set up database tables from `schema.sql`: `$ npm run db:schema`
 1. Load seed data from `albums.sql`: `$ npm run db:seed`
