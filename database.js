@@ -52,8 +52,8 @@ const addUser = function({ name, email, password }, callback) {
   )
 }
 
-const getUserByEmail = function (email, callback) {
-  query("SELECT * FROM users where email = $1", [email], callback)
+const getUser = function ({ email, password }, callback) {
+  query("SELECT * FROM users WHERE email = $1 and password = $2", [email, password], callback)
 }
 
 module.exports = {
@@ -61,5 +61,5 @@ module.exports = {
   getAlbumsByID,
   truncateTables,
   addUser,
-  getUserByEmail
+  getUser
 }

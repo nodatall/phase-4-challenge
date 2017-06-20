@@ -3,7 +3,7 @@ const {
   getAlbums,
   getAlbumsByID,
   addUser,
-  getUserByEmail
+  getUser
 } = require('../database.js')
 
 describe('albums', () => {
@@ -36,12 +36,12 @@ describe('albums', () => {
 
 describe('users', () => {
 
-  context('getUserByEmail()', () => {
+  context('getUser()', () => {
 
     it('should get user matching given email', done => {
-      const userInfo = { name: 'sylvan', email: 'forgottenChicken@lg.com', password: 1234}
+      const userInfo = { name: 'sylvan', email: 'forgottenChicken@lg.com', password: 1234 }
       addUser( userInfo, ( error, response ) => {
-        getUserByEmail('forgottenChicken@lg.com', ( error, user ) => {
+        getUser({ email:'forgottenChicken@lg.com', password: 1234 }, ( error, user ) => {
           expect( user[0].name ).to.equal( 'sylvan' )
           expect( user[0].password ).to.equal( '1234' )
           done()
@@ -50,14 +50,18 @@ describe('users', () => {
     })
 
     it('should return no user if no user matches given email', done => {
-      getUserByEmail('@.com', ( error, user ) => {
+      getUser({ email: '@.com', password: 1234 }, ( error, user ) => {
         expect( user.length ).to.equal( 0 )
         done()
       })
     })
 
+  })
+
+  context('addUser()', () => {
+
     it('should throw an error if user with email already exists', done => {
-      const userInfo = { name: 'sylvan', email: 'forgottenChicken@lg.com', password: 1234}
+      const userInfo = { name: 'sylvan', email: 'forgottenChicken@lg.com', password: 1234 }
       addUser( userInfo, ( error, response) => {
         addUser( userInfo, ( error, response ) => {
           expect( error.detail ).to.equal( 'Key (email)=(forgottenChicken@lg.com) already exists.' )
@@ -65,6 +69,7 @@ describe('users', () => {
         })
       })
     })
+
   })
 
 })
