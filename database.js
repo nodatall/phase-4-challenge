@@ -85,6 +85,10 @@ const deleteReview = function ( reviewId, callback ) {
   query( "DELETE FROM reviews WHERE id = $1 RETURNING *", [reviewId], callback )
 }
 
+const getRecentReviews = function ( count, callback ) {
+  query( "SELECT * FROM reviews ORDER BY date ASC LIMIT $1", [count], callback )
+}
+
 module.exports = {
   getAlbums,
   getAlbumsByID,
@@ -94,5 +98,6 @@ module.exports = {
   addReview,
   getReviewsByAlbumId,
   getReviewsByUserId,
-  deleteReview
+  deleteReview,
+  getRecentReviews
 }

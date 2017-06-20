@@ -7,7 +7,8 @@ const {
   addReview,
   getReviewsByAlbumId,
   getReviewsByUserId,
-  deleteReview
+  deleteReview,
+  getRecentReviews
 } = require('../database.js')
 
 describe('albums', () => {
@@ -206,6 +207,28 @@ describe('reviews', () => {
             getReviewsByAlbumId( review.album_id, ( error, reviews ) => {
               expect( reviews ).to.deep.equal( [] )
               done()
+            })
+          })
+        })
+      })
+    })
+
+  })
+
+  context('getRecentReviews()', () => {
+
+    it('should return the given number of most recent reviews', done => {
+      addUser( userInfo, ( error, user ) => {
+        reviews[0].user_id = user[0].id
+        reviews[1].user_id = user[0].id
+        reviews[2].user_id = user[0].id
+        addReview( reviews[0], _ => {
+          addReview( reviews[1], _ => {
+            addReview( reviews[2], _ => {
+              getRecentReviews( 3, ( error, reviews ) => {
+                expect( reviews[0].date < reviews[1].date ).to.be.true
+                done()
+              })
             })
           })
         })
