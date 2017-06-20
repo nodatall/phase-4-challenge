@@ -2,6 +2,11 @@
   <h1>
     <a href='/'>Vinyl</a>
   </h1>
-  <a href='/signin'>Sign In</a>
-  <a href='/signup'>Sign Up</a>
+  <% if ( loggedIn ) { %>
+    <a href='/users/<%=id%>'>Profile</a>
+    <a href='/logout'>Sign Out</a>
+  <% } else { %>
+    <a href='/signin'>Sign In</a>
+    <a href='/signup'>Sign Up</a>
+  <% } %>
 </div>

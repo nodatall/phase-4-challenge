@@ -8,7 +8,12 @@ router.get( '/', ( request, response ) => {
     if ( error ) {
       response.status(500).render( 'error', { error: error } )
     } else {
-      response.render('index', { albums })
+      if ( request.session.user ) {
+        const { name, email, joined, id } = request.session.user
+        response.render('index', { albums, loggedIn: true, name, email, joined, id })
+      } else {
+        response.render('index', { albums, loggedIn: false })
+      }
     }
   })
 })
@@ -21,17 +26,25 @@ router.get( '/albums/:albumID', ( request, response ) => {
       response.status( 500 ).render( 'error', { error: error } )
     } else {
       const album = albums[0]
-      response.render( 'album', { album: album } )
+      if ( request.session.user ) {
+        const { name, email, joined, id } = request.session.user
+        response.render( 'album', { album, loggedIn: true, name, email, joined, id } )
+      } else {
+        response.render('album', { album, loggedIn: false })
+      }
     }
   })
 })
 
-router.get( '/signup', ( request, response ) => response.render( 'sign_up' ) )
+router.get( '/signup', ( request, response ) => {
+  response.render( 'sign_up', { loggedIn: false } )
+})
+
 router.get( '/signin', ( request, response ) => {
   if ( request.session.user ) {
     response.redirect( `/users/${request.session.user.id}` )
   } else {
-    response.render( 'sign_in' )
+    response.render( 'sign_in', { loggedIn: false } )
   }
 })
 
@@ -67,8 +80,13 @@ router.get( '/users/:id', ( request, response ) => {
   if ( request.session.user.id !== +request.params.id ) {
     response.redirect( `/users/${request.session.user.id}` )
   }
-  const { name, email, joined } = request.session.user
-  response.render( 'profile', { name, email, joined } )
+  const { name, email, joined, id } = request.session.user
+  response.render( 'profile', { loggedIn: true, name, email, joined, id } )
+})
+
+router.get( '/logout', ( request, response ) => {
+  request.session.destroy()
+  response.redirect('/')
 })
 
 module.exports = router
