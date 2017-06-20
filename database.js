@@ -68,7 +68,7 @@ const addReview = function ( { content, user_id, album_id }, callback ) {
 
 const getReviewsBy = function ( column, value, callback ) {
   query(
-    `SELECT reviews.id, reviews.content, reviews.date, users.name, albums.title FROM reviews JOIN users ON (reviews.user_id = users.id) JOIN albums ON (reviews.album_id = albums.id) WHERE ${column} = $1`,
+    `SELECT reviews.id, reviews.content, reviews.date, users.name, users.id AS user_id, albums.title, albums.id AS album_id FROM reviews JOIN users ON (reviews.user_id = users.id) JOIN albums ON (reviews.album_id = albums.id) WHERE ${column} = $1`,
     [value],
     callback
   )
@@ -87,7 +87,7 @@ const deleteReview = function ( reviewId, callback ) {
 }
 
 const getRecentReviews = function ( count, callback ) {
-  query( "SELECT * FROM reviews ORDER BY date ASC LIMIT $1", [count], callback )
+  query( "SELECT reviews.id, reviews.content, reviews.date, users.name, users.id AS user_id, albums.title, albums.id AS album_id FROM reviews JOIN users ON (reviews.user_id = users.id) JOIN albums ON (reviews.album_id = albums.id) ORDER BY date ASC LIMIT $1", [count], callback )
 }
 
 module.exports = {

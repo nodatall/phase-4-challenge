@@ -4,16 +4,22 @@ const database = require('./database')
 const router = express()
 
 router.get( '/', ( request, response ) => {
-  database.getAlbums(( error, albums ) => {
+  database.getAlbums( ( error, albums ) => {
     if ( error ) {
-      response.status(500).render( 'error', { error: error } )
+      response.status( 500 ).render( 'error', { error: error } )
     } else {
-      if ( request.session.user ) {
-        const { name, email, joined, id } = request.session.user
-        response.render('index', { albums, loggedIn: true, name, email, joined, id })
-      } else {
-        response.render('index', { albums, loggedIn: false })
-      }
+      database.getRecentReviews( 3, ( error, reviews ) => {
+        reviews = reviews.map( review => {
+          review.date = _formatTime( review.date )
+          return review
+        })
+        if ( request.session.user ) {
+          const { name, email, joined, id } = request.session.user
+          response.render('index', { albums, reviews, loggedIn: true, name, email, joined, id })
+        } else {
+          response.render('index', { albums, reviews, loggedIn: false })
+        }
+      })
     }
   })
 })
@@ -80,7 +86,8 @@ router.get( '/users/:id', ( request, response ) => {
   if ( request.session.user.id !== +request.params.id ) {
     response.redirect( `/users/${request.session.user.id}` )
   }
-  const { name, email, joined, id } = request.session.user
+  let { name, email, joined, id } = request.session.user
+  joined = _formatTime( joined )
   response.render( 'profile', { loggedIn: true, name, email, joined, id } )
 })
 
@@ -88,5 +95,9 @@ router.get( '/logout', ( request, response ) => {
   request.session.destroy()
   response.redirect('/')
 })
+
+function _formatTime( date ) {
+  return new Date(date).toLocaleDateString("en-us", { hour: 'numeric', minute: 'numeric' })
+}
 
 module.exports = router
