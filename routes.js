@@ -27,7 +27,13 @@ router.get( '/albums/:albumID', ( request, response ) => {
 })
 
 router.get( '/signup', ( request, response ) => response.render( 'sign_up' ) )
-router.get( '/signin', ( request, response ) => response.render( 'sign_in' ) )
+router.get( '/signin', ( request, response ) => {
+  if ( request.session.user ) {
+    response.redirect( `/users/${request.session.user.id}` )
+  } else {
+    response.render( 'sign_in' )
+  }
+})
 
 router.post( '/users/new', ( request, response ) => {
   database.addUser( request.body, ( error, user ) => {
@@ -59,10 +65,10 @@ router.get( '/users/:id', ( request, response ) => {
     response.redirect( '/' )
   }
   if ( request.session.user.id !== +request.params.id ) {
-    response.redirect( '/signin')
+    response.redirect( `/users/${request.session.user.id}` )
   }
   const { name, email, joined } = request.session.user
-  response.render('profile', { name, email, joined })
+  response.render( 'profile', { name, email, joined } )
 })
 
 module.exports = router
