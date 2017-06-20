@@ -56,7 +56,7 @@ router.post( '/users/new', ( request, response ) => {
         const { email, password } = request.body
         database.getUser( { email, password }, ( error, user ) => {
           request.session.user = user[0]
-          response.redirect( `/users/${users[0].id}` )
+          response.redirect( `/users/${user[0].id}` )
         })
       }
   })
