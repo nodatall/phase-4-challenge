@@ -5,7 +5,9 @@ const {
   addUser,
   getUser,
   addReview,
-  getReviewsByAlbumId
+  getReviewsByAlbumId,
+  getReviewsByUserId,
+  deleteReview
 } = require('../database.js')
 
 describe('albums', () => {
@@ -51,10 +53,11 @@ describe('users', () => {
     })
 
     it('should throw an error if user with email already exists', done => {
-      addUser( userInfo, _ => {} )
-      addUser( userInfo, ( error, response ) => {
-        expect( error.detail ).to.equal( 'Key (email)=(forgottenChicken@lg.com) already exists.' )
-        done()
+      addUser( userInfo, _ => {
+        addUser( userInfo, ( error, response ) => {
+          expect( error.detail ).to.equal( 'Key (email)=(forgottenChicken@lg.com) already exists.' )
+          done()
+        })
       })
     })
 
@@ -63,11 +66,12 @@ describe('users', () => {
   context('getUser()', () => {
 
     it('should get user matching given email', done => {
-      addUser( userInfo, _ => {} )
-      getUser({ email:'forgottenChicken@lg.com', password: 1234 }, ( error, user ) => {
-        expect( user[0].name ).to.equal( 'sylvan' )
-        expect( user[0].password ).to.equal( '1234' )
-        done()
+      addUser( userInfo, _ => {
+        getUser({ email:'forgottenChicken@lg.com', password: 1234 }, ( error, user ) => {
+          expect( user[0].name ).to.equal( 'sylvan' )
+          expect( user[0].password ).to.equal( '1234' )
+          done()
+        })
       })
     })
 
@@ -93,10 +97,15 @@ describe('reviews', () => {
       content: 'awesome',
       user_id: undefined,
       album_id: 1
+    },
+    {
+      content: 'confusing',
+      user_id: undefined,
+      album_id: 2
     }
   ]
 
-  context('addReview', () => {
+  context('addReview()', () => {
 
     it('should add a review to the reviews table and return it', done => {
       addUser( userInfo, ( error, user ) => {
@@ -133,19 +142,22 @@ describe('reviews', () => {
   context('getReviewsByAlbumId()', () => {
 
     it('should return all reviews matching given album id', done => {
-      let userId
       reviews[0].album_id = 1
       addUser( userInfo, ( error, user ) => {
         reviews[0].user_id = user[0].id
         reviews[1].user_id = user[0].id
-        userId = user[0].id
+        reviews[2].user_id = user[0].id
         addReview( reviews[0], _ => {
           addReview( reviews[1], _ => {
-            getReviewsByAlbumId( 1, ( error, reviews ) => {
-              expect( reviews.length ).to.equal( 2 )
-              expect( reviews[0].content ).to.equal( 'terrible' )
-              expect( reviews[1].content ).to.equal( 'awesome' )
-              done()
+            addReview( reviews[2], _ => {
+              getReviewsByAlbumId( 1, ( error, reviews ) => {
+                expect( reviews.length ).to.equal( 2 )
+                expect( reviews[0].content ).to.equal( 'terrible' )
+                expect( reviews[0].name ).to.equal( 'sylvan' )
+                expect( reviews[0].title ).to.equal( 'Malibu' )
+                expect( reviews[1].content ).to.equal( 'awesome' )
+                done()
+              })
             })
           })
         })
@@ -156,6 +168,47 @@ describe('reviews', () => {
       getReviewsByAlbumId( 1, ( error, reviews ) => {
         expect( reviews ).to.deep.equal( [] )
         done()
+      })
+    })
+
+  })
+
+  context('getReviewsByUserId()', () => {
+
+    it('should return all reviews for given user id', done => {
+      addUser( userInfo, ( error, user ) => {
+        reviews[0].user_id = user[0].id
+        reviews[1].user_id = user[0].id
+        addReview( reviews[0], _ => {
+          addReview( reviews[1], _ => {
+            addReview( reviews[2], _ => {
+              getReviewsByUserId( user[0].id, ( error, reviews ) => {
+                expect( reviews.length ).to.equal( 2 )
+                expect( reviews[0].content ).to.equal( 'terrible' )
+                done()
+              })
+            })
+          })
+        })
+      })
+    })
+
+  })
+
+  context('deleteReview()', () => {
+
+    it('should delete review with given id', done => {
+      addUser( userInfo, ( error, user ) => {
+        reviews[0].user_id = user[0].id
+        addReview( reviews[0], ( error, [{ id: reviewId }] ) => {
+          deleteReview( reviewId, ( error, review ) => {
+            expect( review[0].id ).to.equal( reviewId )
+            getReviewsByAlbumId( review.album_id, ( error, reviews ) => {
+              expect( reviews ).to.deep.equal( [] )
+              done()
+            })
+          })
+        })
       })
     })
 
