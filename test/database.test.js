@@ -55,6 +55,16 @@ describe('users', () => {
         done()
       })
     })
+
+    it('should throw an error if user with email already exists', done => {
+      const userInfo = { name: 'sylvan', email: 'forgottenChicken@lg.com', password: 1234}
+      addUser( userInfo, ( error, response) => {
+        addUser( userInfo, ( error, response ) => {
+          expect( error.detail ).to.equal( 'Key (email)=(forgottenChicken@lg.com) already exists.' )
+          done()
+        })
+      })
+    })
   })
 
 })
