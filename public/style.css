@@ -61,8 +61,12 @@ p {
   margin: 0 auto;
 }
 
+.album-container {
+  padding: 15px;
+}
+
 .album-headers em {
-  margin-left: 15px;
+  margin: 8px 0 0 10px;
 }
 
 .album-headers button {
@@ -143,6 +147,10 @@ button:hover {
   margin: 0px;
 }
 
+.review-headers img:hover {
+  cursor: pointer;
+}
+
 .review-container {
   margin-bottom: 25px;
 }
@@ -172,11 +180,22 @@ button:hover {
 
 .add-review-headers {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
 .add-review-headers img {
-  width: 20px;
-  height: 18px;
+  margin-left: 10px;
+}
+
+.delete-review-button {
+  width: 24px;
+  background: none;
+  border: none;
+  background-image: url(/images/trash.png);
+  background-repeat: no-repeat;
+}
+
+.delete-review-button:hover {
+  cursor: pointer;
 }

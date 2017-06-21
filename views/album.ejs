@@ -23,7 +23,7 @@
       <img class='cancel-review' src='../images/redx.png'>
     </div>
     <form action='/reviews/new' method='post'>
-      <textarea type='text' name='content'></textarea>
+      <textarea type='text' name='content' required></textarea>
       <input type='hidden' name='user_id' value='<%= id %>'>
       <input type='hidden' name='album_id' value='<%= album.id %>'>
       <button type="submit">Submit</button>

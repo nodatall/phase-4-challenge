@@ -86,17 +86,23 @@ router.post( '/login', ( request, response ) => {
 })
 
 router.get( '/users/:id', ( request, response ) => {
-  if ( !request.session.user ) {
-    database.getUserById( request.params.id, ( error, user ) => {
-      let { name, email, joined, id } = user[0]
-      joined = _formatTime( joined )
-      response.render( 'profile', { loggedIn: false, name, email, joined, id } )
+  database.getReviewsByUserId( request.params.id, ( error, reviews ) => {
+    reviews = reviews.map( review => {
+      review.date = _formatTime( review.date )
+      return review
     })
-  } else {
-    let { name, email, joined, id } = request.session.user
-    joined = _formatTime( joined )
-    response.render( 'profile', { loggedIn: true, name, email, joined, id } )
-  }
+    if ( !request.session.user ) {
+      database.getUserById( request.params.id, ( error, user ) => {
+        let { name, email, joined, id } = user[0]
+        joined = _formatTime( joined )
+        response.render( 'profile', { loggedIn: false, page: 'profile', reviews, name, email, joined, id } )
+      })
+    } else {
+      let { name, email, joined, id } = request.session.user
+      joined = _formatTime( joined )
+      response.render( 'profile', { loggedIn: true, page: 'profile', reviews, name, email, joined, id } )
+    }
+  })
 })
 
 router.get( '/logout', ( request, response ) => {
@@ -111,6 +117,12 @@ router.post( '/reviews/new', ( request, response ) => {
     } else {
       response.redirect( `/albums/${request.body.album_id}` )
     }
+  })
+})
+
+router.post( '/reviews/delete/:id', ( request, response ) => {
+  database.deleteReview( request.params.id, ( error, review ) => {
+    response.redirect( `/users/${review[0].user_id}` )
   })
 })
 

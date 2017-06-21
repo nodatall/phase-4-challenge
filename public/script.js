@@ -1,4 +1,5 @@
 addReviewButtonToggleListener()
+listenForDeleteReview()
 
 function addReviewButtonToggleListener() {
   window.onload = function() {
@@ -23,5 +24,19 @@ function toggleElementVisibility( className ) {
     targetElement.style.display = 'none'
   } else {
     targetElement.style.display = 'block'
+  }
+}
+
+function listenForDeleteReview() {
+  window.onload = function() {
+    const deleteReviewForm = document.querySelectorAll('.delete-review-form')[0]
+    if ( deleteReviewForm ) {
+      deleteReviewForm.addEventListener( "click", function( event ) {
+        event.preventDefault()
+        if ( confirm( 'Are you sure you want to delete this review?' ) ) {
+          deleteReviewForm.submit()
+        }
+      })
+    }
   }
 }
