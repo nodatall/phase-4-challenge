@@ -12,10 +12,7 @@ router.get( '/', ( request, response ) => {
         if ( error ) {
           response.status( 500 ).render('error', { error } )
         } else {
-          reviews = reviews.map( review => {
-            review.date = _formatTime( review.date )
-            return review
-          })
+          reviews = _formatReviewsTimes( reviews )
           if ( request.session.user ) {
             const { id } = request.session.user
             response.render('index', { albums, reviews, id, loggedIn: true, page: 'home' })
@@ -40,10 +37,7 @@ router.get( '/albums/:albumID', ( request, response ) => {
         if ( error ) {
           response.status( 500 ).render('error', { error } )
         } else {
-          reviews = reviews.map( review => {
-            review.date = _formatTime( review.date )
-            return review
-          })
+          reviews = _formatReviewsTimes( reviews )
           if ( request.session.user ) {
             const { id } = request.session.user
             response.render( 'album', { album, reviews, id, loggedIn: true, page: 'album' } )
@@ -155,6 +149,13 @@ router.post( '/reviews/delete/:id', ( request, response ) => {
     }
   })
 })
+
+function _formatReviewsTimes( reviews ) {
+  return reviews.map( review => {
+    review.date = _formatTime( review.date )
+    return review
+  })
+}
 
 function _formatTime( date ) {
   return new Date(date).toLocaleDateString("en-us", { hour: 'numeric', minute: 'numeric' })
