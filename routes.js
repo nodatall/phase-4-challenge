@@ -87,14 +87,16 @@ router.post( '/login', ( request, response ) => {
 
 router.get( '/users/:id', ( request, response ) => {
   if ( !request.session.user ) {
+    database.getUserById( request.params.id, ( error, user ) => {
+      let { name, email, joined, id } = user[0]
+      joined = _formatTime( joined )
+      response.render( 'profile', { loggedIn: false, name, email, joined, id } )
+    })
+  } else {
+    let { name, email, joined, id } = request.session.user
+    joined = _formatTime( joined )
     response.render( 'profile', { loggedIn: true, name, email, joined, id } )
   }
-  if ( request.session.user.id !== +request.params.id ) {
-    response.redirect( `/users/${request.session.user.id}` )
-  }
-  let { name, email, joined, id } = request.session.user
-  joined = _formatTime( joined )
-  response.render( 'profile', { loggedIn: true, name, email, joined, id } )
 })
 
 router.get( '/logout', ( request, response ) => {
