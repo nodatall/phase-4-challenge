@@ -37,20 +37,36 @@ p {
   }
 }
 
-.album-container {
+.home-album-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   padding: 0 0 50px 0;
 }
 
-.album-container h2 {
+.home-album-container h2 {
   text-align: center;
 }
 
-.album-container > div {
+.home-album-container > div {
   min-width: 320px;
   margin-bottom: 20px;
+}
+
+.album-headers {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.album-headers em {
+  margin-left: 15px;
+}
+
+.album-headers button {
+  margin-left: auto;
 }
 
 .top-nav {
@@ -86,21 +102,27 @@ form {
   margin: auto;
 }
 
-form input {
+input {
   margin: 5px 0;
   border-radius: 3px;
   height: 25px;
   padding-left: 5px;
 }
 
-form button {
+textarea {
+  height: 150px;
+  margin: 15px 0;
+  padding: 10px;
+}
+
+button {
   height: 25px;
   border-radius: 3px;
   background-color: white;
   border: 1px solid grey;
 }
 
-form button:hover {
+button:hover {
   cursor: pointer;
   background-color: #e5e5e5;
 }
@@ -127,4 +149,34 @@ form button:hover {
 
 .review-container > p {
   font-style: italic;
+}
+
+.reviews-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.reviews-container h2 {
+  text-align: center;
+}
+
+.add-review-container {
+  display: none;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.cancel-review:hover {
+  cursor: pointer;
+}
+
+.add-review-headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.add-review-headers img {
+  width: 20px;
+  height: 18px;
 }

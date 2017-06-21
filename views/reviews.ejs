@@ -1,0 +1,13 @@
+<div class='reviews-list'>
+  <h2> <% if ( page === 'home' ) { %> Recent <% } %> Reviews</h2>
+  <% reviews.forEach(function(review) { %>
+    <div class='review-container'>
+      <div class='review-headers'>
+        <h5><a href='/albums/<%= review.album_id %>'><%= review.title %></a></h5>
+        <p><%= review.date %></p>
+      </div>
+      <p>"<%= review.content %>"</p>
+      <div>by <a href="/users/<%= review.user_id %>"><%= review.name %></a></div>
+    </div>
+  <% }) %>
+</div>

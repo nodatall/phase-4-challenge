@@ -14,10 +14,10 @@ router.get( '/', ( request, response ) => {
           return review
         })
         if ( request.session.user ) {
-          const { name, email, joined, id } = request.session.user
-          response.render('index', { albums, reviews, loggedIn: true, name, email, joined, id })
+          const { id } = request.session.user
+          response.render('index', { albums, reviews, id, loggedIn: true, page: 'home' })
         } else {
-          response.render('index', { albums, reviews, loggedIn: false })
+          response.render('index', { albums, reviews, loggedIn: false, page: 'home' })
         }
       })
     }
@@ -25,19 +25,25 @@ router.get( '/', ( request, response ) => {
 })
 
 router.get( '/albums/:albumID', ( request, response ) => {
-  const albumID = request.params.albumID
+  const albumId = request.params.albumID
 
-  database.getAlbumsByID( albumID, ( error, albums ) => {
+  database.getAlbumsByID( albumId, ( error, albums ) => {
     if ( error ) {
       response.status( 500 ).render( 'error', { error: error } )
     } else {
       const album = albums[0]
-      if ( request.session.user ) {
-        const { name, email, joined, id } = request.session.user
-        response.render( 'album', { album, loggedIn: true, name, email, joined, id } )
-      } else {
-        response.render('album', { album, loggedIn: false })
-      }
+      database.getReviewsByAlbumId( albumId, ( error, reviews ) => {
+        reviews = reviews.map( review => {
+          review.date = _formatTime( review.date )
+          return review
+        })
+        if ( request.session.user ) {
+          const { id } = request.session.user
+          response.render( 'album', { album, reviews, id, loggedIn: true, page: 'album' } )
+        } else {
+          response.render('album', { album, reviews, id: null, loggedIn: false, page: 'album' })
+        }
+      })
     }
   })
 })
@@ -94,6 +100,16 @@ router.get( '/users/:id', ( request, response ) => {
 router.get( '/logout', ( request, response ) => {
   request.session.destroy()
   response.redirect('/')
+})
+
+router.post( '/reviews/new', ( request, response ) => {
+  database.addReview( request.body, ( error, review ) => {
+    if ( error ) {
+      response.status( 500 ).render('error', { error } )
+    } else {
+      response.redirect( `/albums/${request.body.album_id}` )
+    }
+  })
 })
 
 function _formatTime( date ) {

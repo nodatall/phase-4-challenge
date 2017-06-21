@@ -7,12 +7,27 @@
 </head>
 <body>
   <% include header.ejs %>
-  <h1><%= album.title %></h1>
-  <em>by <%= album.artist %></em>
-
-  <h2>Reviews</h2>
-
-  <!-- TODO: implement album reviews -->
-
+  <div class='album-container'>
+    <div class='album-headers'>
+      <h1><%= album.title %></h1>
+      <em>by <%= album.artist %></em>
+      <button class='add-review-button'><a>Add Review</a></button>
+    </div>
+    <div class='reviews-container'>
+      <% include reviews.ejs %>
+    </div>
+  </div>
+  <div class='add-review-container'>
+    <div class='add-review-headers'>
+      <h3>New review for <%= album.title %></h3>
+      <img class='cancel-review' src='../images/redx.png'>
+    </div>
+    <form action='/reviews/new' method='post'>
+      <textarea type='text' name='content'></textarea>
+      <input type='hidden' name='user_id' value='<%= id %>'>
+      <input type='hidden' name='album_id' value='<%= album.id %>'>
+      <button type="submit">Submit</button>
+    </form>
+  </div>
 </body>
 </html>
