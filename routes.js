@@ -9,15 +9,19 @@ router.get( '/', ( request, response ) => {
       response.status( 500 ).render( 'error', { error: error } )
     } else {
       database.getRecentReviews( 3, ( error, reviews ) => {
-        reviews = reviews.map( review => {
-          review.date = _formatTime( review.date )
-          return review
-        })
-        if ( request.session.user ) {
-          const { id } = request.session.user
-          response.render('index', { albums, reviews, id, loggedIn: true, page: 'home' })
+        if ( error ) {
+          response.status( 500 ).render('error', { error } )
         } else {
-          response.render('index', { albums, reviews, loggedIn: false, page: 'home' })
+          reviews = reviews.map( review => {
+            review.date = _formatTime( review.date )
+            return review
+          })
+          if ( request.session.user ) {
+            const { id } = request.session.user
+            response.render('index', { albums, reviews, id, loggedIn: true, page: 'home' })
+          } else {
+            response.render('index', { albums, reviews, loggedIn: false, page: 'home' })
+          }
         }
       })
     }
@@ -33,15 +37,19 @@ router.get( '/albums/:albumID', ( request, response ) => {
     } else {
       const album = albums[0]
       database.getReviewsByAlbumId( albumId, ( error, reviews ) => {
-        reviews = reviews.map( review => {
-          review.date = _formatTime( review.date )
-          return review
-        })
-        if ( request.session.user ) {
-          const { id } = request.session.user
-          response.render( 'album', { album, reviews, id, loggedIn: true, page: 'album' } )
+        if ( error ) {
+          response.status( 500 ).render('error', { error } )
         } else {
-          response.render('album', { album, reviews, id: null, loggedIn: false, page: 'album' })
+          reviews = reviews.map( review => {
+            review.date = _formatTime( review.date )
+            return review
+          })
+          if ( request.session.user ) {
+            const { id } = request.session.user
+            response.render( 'album', { album, reviews, id, loggedIn: true, page: 'album' } )
+          } else {
+            response.render('album', { album, reviews, id: null, loggedIn: false, page: 'album' })
+          }
         }
       })
     }
@@ -93,9 +101,13 @@ router.get( '/users/:id', ( request, response ) => {
     })
     if ( !request.session.user ) {
       database.getUserById( request.params.id, ( error, user ) => {
-        let { name, email, joined, id } = user[0]
-        joined = _formatTime( joined )
-        response.render( 'profile', { loggedIn: false, page: 'profile', reviews, name, email, joined, id } )
+        if ( error ) {
+          response.status( 500 ).render('error', { error } )
+        } else {
+          let { name, email, joined, id } = user[0]
+          joined = _formatTime( joined )
+          response.render( 'profile', { loggedIn: false, page: 'profile', reviews, name, email, joined, id } )
+        }
       })
     } else {
       let { name, email, joined, id } = request.session.user
@@ -121,19 +133,23 @@ router.post( '/reviews/new', ( request, response ) => {
 })
 
 router.post( '/reviews/delete/:id', ( request, response ) => {
-  if ( request.session.user && request.session.user.id === request.params.id ) {
-    database.deleteReview( request.params.id, ( error, review ) => {
-      response.redirect( `/users/${review[0].user_id}` )
-    })
-  } else {
-    database.getReviewById( request.params.id, ( error, review ) => {
-      if ( error ) {
-        response.status( 500 ).render('error', { error } )
+  database.getReviewById( request.params.id, ( error, review ) => {
+    if ( error ) {
+      response.status( 500 ).render('error', { error } )
+    } else {
+      if ( request.session.user && request.session.user.id === review[0].user_id ) {
+        database.deleteReview( request.params.id, ( error, review ) => {
+          if ( error ) {
+            response.status( 500 ).render('error', { error } )
+          } else {
+            response.redirect( `/users/${review[0].user_id}` )
+          }
+        })
       } else {
         response.redirect( `/users/${review[0].user_id}`)
       }
-    })
-  }
+    }
+  })
 })
 
 function _formatTime( date ) {
