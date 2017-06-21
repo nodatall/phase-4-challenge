@@ -1,0 +1,20 @@
+<div class='reviews-list'>
+  <h2> <% if ( page === 'home' ) { %> Recent <% } %> Reviews</h2>
+  <% reviews.forEach(function(review) { %>
+    <div class='review-container'>
+      <div class='review-headers'>
+        <h5><a href='/albums/<%= review.album_id %>'><%= review.title %></a></h5>
+        <p><%= review.date %></p>
+        <% if ( page === 'profile' ) { %>
+          <form class='delete-review-form' action='/reviews/delete/<%= review.id %>' method='post'>
+            <input class='delete-review-button' type='submit' value=''>
+          </form>
+        <% } %>
+      </div>
+      <p>"<%= review.content %>"</p>
+      <% if ( page !== 'profile' ) { %>
+        <div>by <a href="/users/<%= review.user_id %>"><%= review.name %></a></div>
+      <% } %>
+    </div>
+  <% }) %>
+</div>
