@@ -54,8 +54,12 @@ const addUser = function( { name, email, password }, callback ) {
   )
 }
 
-const getUser = function ( { email, password }, callback ) {
+const getUserByNameEmail = function ( { email, password }, callback ) {
   query( "SELECT * FROM users WHERE email = $1 and password = $2", [email, password], callback )
+}
+
+const getUserById = function ( userId, callback ) {
+  query( "SELECT * FROM users WHERE id = $1", [userId], callback )
 }
 
 const addReview = function ( { content, user_id, album_id }, callback ) {
@@ -95,7 +99,8 @@ module.exports = {
   getAlbumsByID,
   truncateTables,
   addUser,
-  getUser,
+  getUserByNameEmail,
+  getUserById,
   addReview,
   getReviewsByAlbumId,
   getReviewsByUserId,

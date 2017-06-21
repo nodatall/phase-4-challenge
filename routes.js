@@ -66,7 +66,7 @@ router.post( '/users/new', ( request, response ) => {
         response.status( 500 ).render('error', { error: error } )
       } else {
         const { email, password } = request.body
-        database.getUser( { email, password }, ( error, user ) => {
+        database.getUserByNameEmail( { email, password }, ( error, user ) => {
           request.session.user = user[0]
           response.redirect( `/users/${user[0].id}` )
         })
@@ -75,7 +75,7 @@ router.post( '/users/new', ( request, response ) => {
 })
 
 router.post( '/login', ( request, response ) => {
-  database.getUser( request.body, ( error, user ) => {
+  database.getUserByNameEmail( request.body, ( error, user ) => {
     if ( error ) {
       response.status( 500 ).render('error', { error: error } )
     } else {
@@ -87,7 +87,7 @@ router.post( '/login', ( request, response ) => {
 
 router.get( '/users/:id', ( request, response ) => {
   if ( !request.session.user ) {
-    response.redirect( '/' )
+    response.render( 'profile', { loggedIn: true, name, email, joined, id } )
   }
   if ( request.session.user.id !== +request.params.id ) {
     response.redirect( `/users/${request.session.user.id}` )

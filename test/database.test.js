@@ -3,7 +3,8 @@ const {
   getAlbums,
   getAlbumsByID,
   addUser,
-  getUser,
+  getUserByNameEmail,
+  getUserById,
   addReview,
   getReviewsByAlbumId,
   getReviewsByUserId,
@@ -64,11 +65,11 @@ describe('users', () => {
 
   })
 
-  context('getUser()', () => {
+  context('getUserByNameEmail()', () => {
 
     it('should get user matching given email', done => {
       addUser( userInfo, _ => {
-        getUser({ email:'forgottenChicken@lg.com', password: 1234 }, ( error, user ) => {
+        getUserByNameEmail({ email:'forgottenChicken@lg.com', password: 1234 }, ( error, user ) => {
           expect( user[0].name ).to.equal( 'sylvan' )
           expect( user[0].password ).to.equal( '1234' )
           done()
@@ -77,9 +78,23 @@ describe('users', () => {
     })
 
     it('should return no user if no user matches given email', done => {
-      getUser({ email: '@.com', password: 1234 }, ( error, user ) => {
+      getUserByNameEmail({ email: '@.com', password: 1234 }, ( error, user ) => {
         expect( user.length ).to.equal( 0 )
         done()
+      })
+    })
+
+  })
+
+  context('getUserById()', () => {
+
+    it('should get user matching given id', done => {
+      addUser( userInfo, ( response, user ) => {
+        getUserById( user[0].id, ( error, newUser ) => {
+          expect( newUser[0].name ).to.equal( 'sylvan' )
+          expect( newUser[0].password ).to.equal( '1234' )
+          done()
+        })
       })
     })
 
