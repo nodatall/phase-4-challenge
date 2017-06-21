@@ -9,7 +9,8 @@ const {
   getReviewsByAlbumId,
   getReviewsByUserId,
   deleteReview,
-  getRecentReviews
+  getRecentReviews,
+  getReviewById
 } = require('../database.js')
 
 describe('albums', () => {
@@ -168,10 +169,10 @@ describe('reviews', () => {
             addReview( reviews[2], _ => {
               getReviewsByAlbumId( 1, ( error, reviews ) => {
                 expect( reviews.length ).to.equal( 2 )
-                expect( reviews[0].content ).to.equal( 'terrible' )
-                expect( reviews[0].name ).to.equal( 'sylvan' )
-                expect( reviews[0].title ).to.equal( 'Malibu' )
-                expect( reviews[1].content ).to.equal( 'awesome' )
+                expect( reviews[1].content ).to.equal( 'terrible' )
+                expect( reviews[1].name ).to.equal( 'sylvan' )
+                expect( reviews[1].title ).to.equal( 'Malibu' )
+                expect( reviews[0].content ).to.equal( 'awesome' )
                 done()
               })
             })
@@ -200,10 +201,27 @@ describe('reviews', () => {
             addReview( reviews[2], _ => {
               getReviewsByUserId( user[0].id, ( error, reviews ) => {
                 expect( reviews.length ).to.equal( 2 )
-                expect( reviews[0].content ).to.equal( 'terrible' )
+                expect( reviews[0].content ).to.equal( 'awesome' )
                 done()
               })
             })
+          })
+        })
+      })
+    })
+
+  })
+
+  context('getReviewById()', () => {
+
+    it('should return review matching given id', done => {
+      addUser( userInfo, ( error, user ) => {
+        reviews[0].user_id = user[0].id
+        reviews[1].user_id = user[0].id
+        addReview( reviews[0], ( error, newReview ) => {
+          getReviewById( newReview[0].id, ( error, review ) => {
+            expect( review[0].id ).to.equal( newReview[0].id )
+            done()
           })
         })
       })
@@ -241,7 +259,7 @@ describe('reviews', () => {
           addReview( reviews[1], _ => {
             addReview( reviews[2], _ => {
               getRecentReviews( 3, ( error, reviews ) => {
-                expect( reviews[0].date < reviews[1].date ).to.be.true
+                expect( reviews[0].date > reviews[1].date ).to.be.true
                 done()
               })
             })

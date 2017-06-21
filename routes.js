@@ -121,9 +121,19 @@ router.post( '/reviews/new', ( request, response ) => {
 })
 
 router.post( '/reviews/delete/:id', ( request, response ) => {
-  database.deleteReview( request.params.id, ( error, review ) => {
-    response.redirect( `/users/${review[0].user_id}` )
-  })
+  if ( request.session.user && request.session.user.id === request.params.id ) {
+    database.deleteReview( request.params.id, ( error, review ) => {
+      response.redirect( `/users/${review[0].user_id}` )
+    })
+  } else {
+    database.getReviewById( request.params.id, ( error, review ) => {
+      if ( error ) {
+        response.status( 500 ).render('error', { error } )
+      } else {
+        response.redirect( `/users/${review[0].user_id}`)
+      }
+    })
+  }
 })
 
 function _formatTime( date ) {

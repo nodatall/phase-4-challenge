@@ -1,14 +1,14 @@
-addReviewButtonToggleListener()
-listenForDeleteReview()
+window.onload = function() {
+  addReviewButtonToggleListener()
+  listenForDeleteReview()
+}
 
 function addReviewButtonToggleListener() {
-  window.onload = function() {
-    const addReviewButton = document.querySelectorAll('.add-review-button')[0]
-    if ( addReviewButton ) {
-      const cancelReviewButton = document.querySelectorAll('.cancel-review')[0]
-      addReviewButton.addEventListener( "click", toggleAddReviewWindow )
-      cancelReviewButton.addEventListener( "click", toggleAddReviewWindow )
-    }
+  const addReviewButton = document.querySelectorAll('.add-review-button')[0]
+  if ( addReviewButton ) {
+    const cancelReviewButton = document.querySelectorAll('.cancel-review')[0]
+    addReviewButton.addEventListener( "click", toggleAddReviewWindow )
+    cancelReviewButton.addEventListener( "click", toggleAddReviewWindow )
   }
 }
 
@@ -28,15 +28,13 @@ function toggleElementVisibility( className ) {
 }
 
 function listenForDeleteReview() {
-  window.onload = function() {
-    const deleteReviewForm = document.querySelectorAll('.delete-review-form')[0]
-    if ( deleteReviewForm ) {
-      deleteReviewForm.addEventListener( "click", function( event ) {
-        event.preventDefault()
-        if ( confirm( 'Are you sure you want to delete this review?' ) ) {
-          deleteReviewForm.submit()
-        }
-      })
-    }
+  const deleteReviewForm = document.querySelectorAll('.delete-review-form')[0]
+  if ( deleteReviewForm ) {
+    deleteReviewForm.addEventListener( "click", function( event ) {
+      event.preventDefault()
+      if ( confirm( 'Are you sure you want to delete this review?' ) ) {
+        deleteReviewForm.submit()
+      }
+    })
   }
 }
