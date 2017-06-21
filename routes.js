@@ -123,13 +123,17 @@ router.get( '/logout', ( request, response ) => {
 })
 
 router.post( '/reviews/new', ( request, response ) => {
-  database.addReview( request.body, ( error, review ) => {
-    if ( error ) {
-      response.status( 500 ).render('error', { error } )
-    } else {
-      response.redirect( `/albums/${request.body.album_id}` )
-    }
-  })
+  if ( request.session.user ) {
+    database.addReview( request.body, ( error, review ) => {
+      if ( error ) {
+        response.status( 500 ).render('error', { error } )
+      } else {
+        response.redirect( `/albums/${request.body.album_id}` )
+      }
+    })
+  } else {
+    response.redirect( `/albums/${request.body.album_id}` )
+  }
 })
 
 router.post( '/reviews/delete/:id', ( request, response ) => {
