@@ -28,13 +28,15 @@ function toggleElementVisibility( className ) {
 }
 
 function listenForDeleteReview() {
-  const deleteReviewForm = document.querySelectorAll('.delete-review-form')[0]
-  if ( deleteReviewForm ) {
-    deleteReviewForm.addEventListener( "click", function( event ) {
-      event.preventDefault()
-      if ( confirm( 'Are you sure you want to delete this review?' ) ) {
-        deleteReviewForm.submit()
-      }
+  const deleteReviewForm = document.querySelectorAll('.delete-review-form')
+  if ( deleteReviewForm.length ) {
+    deleteReviewForm.forEach( deleteButton => {
+      deleteButton.addEventListener( "click", function( event ) {
+        event.preventDefault()
+        if ( confirm( 'Are you sure you want to delete this review?' ) ) {
+          deleteReviewForm.submit()
+        }
+      })
     })
   }
 }
